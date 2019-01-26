@@ -114,7 +114,7 @@ $Form.ShowDialog()
 $serverNameTextBox.text = '"' + $serverNameTextBox.text + '"'
 
 #Write out to a file so that on subsequent server launches we can refer back to the file
-$serverConfigInfo = @{ServerIP=serverIPTextBox.text.ToString(); ServerName=$serverNameTextBox.text.ToString(); ServerPassword=$serverPasswordTextBox.text.ToString(); ServerAdminPassword=$serverPasswordAdminTextBox.text.ToString(); ServerToken=$serverTokenTextBox.text.ToString()}
+$serverConfigInfo = @{ServerIP=$serverIPTextBox.text.ToString(); ServerName=$serverNameTextBox.text.ToString(); ServerPassword=$serverPasswordTextBox.text.ToString(); ServerAdminPassword=$serverPasswordAdminTextBox.text.ToString(); ServerToken=$serverTokenTextBox.text.ToString()}
 $serverConfigInfo.GetEnumerator() | Export-CSV -NoTypeInformation -Path C:\steamcmd\steamapps\common\TheForestDedicatedServer\serverConfigs.csv
 
 
