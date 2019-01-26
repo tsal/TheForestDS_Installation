@@ -30,7 +30,7 @@ while ($loopingVariable) {
 New-NetFirewallRule -DisplayName "Allow The Forest DS" -Direction Inbound -Program C:\steamcmd\steamapps\common\TheForestDedicatedServer\TheForestDedicatedServer.exe -Action Allow
 
 #Figure out IP address
-$ipAddress = (Get-NetIPAddress -AddressFamily IPv4 -Type Unicast -InterfaceAlias eth*).IPAddress.tostring()
+#$ipAddress = (Get-NetIPAddress -AddressFamily IPv4 -Type Unicast -InterfaceAlias eth*).IPAddress.tostring()
 
 #Ask user for info, which means creating a winform form
 Add-Type -AssemblyName System.Windows.Forms
@@ -40,6 +40,18 @@ $form.TopMost =  $True
 $Form.AutoSize = $true
 
 $yValue = 20
+
+$serverIPLabel = New-Object System.Windows.Forms.Label
+$serverIPLabel.Text = "Server IP"
+$serverIPLabel.Location = New-Object System.Drawing.Size(300,$yValue)
+$serverIPLabel.AutoSize = $True
+$Form.Controls.Add($serverIPLabel)
+$serverIPTextBox = New-Object System.Windows.Forms.TextBox 
+$serverIPTextBox.AcceptsTab = $True
+$serverIPTextBox.Location = New-Object System.Drawing.Size(10,$yValue) 
+$serverIPTextBox.Size = New-Object System.Drawing.Size(260,20) 
+$Form.Controls.Add($serverIPTextBox)
+$yValue += 30
 
 $serverNameLabel = New-Object System.Windows.Forms.Label
 $serverNameLabel.Text = "Server Name"
@@ -102,7 +114,7 @@ $Form.ShowDialog()
 $serverNameTextBox.text = '"' + $serverNameTextBox.text + '"'
 
 #Write out to a file so that on subsequent server launches we can refer back to the file
-$serverConfigInfo = @{ServerName=$serverNameTextBox.text.ToString(); ServerPassword=$serverPasswordTextBox.text.ToString(); ServerAdminPassword=$serverPasswordAdminTextBox.text.ToString(); ServerToken=$serverTokenTextBox.text.ToString()}
+$serverConfigInfo = @{ServerIP=serverIPTextBox.text.ToString(); ServerName=$serverNameTextBox.text.ToString(); ServerPassword=$serverPasswordTextBox.text.ToString(); ServerAdminPassword=$serverPasswordAdminTextBox.text.ToString(); ServerToken=$serverTokenTextBox.text.ToString()}
 $serverConfigInfo.GetEnumerator() | Export-CSV -NoTypeInformation -Path C:\steamcmd\steamapps\common\TheForestDedicatedServer\serverConfigs.csv
 
 
@@ -118,7 +130,7 @@ start-process C:\SysInternalsSuite\Autologon.exe
 Copy-Item -Path C:\TheForestDSAdminScripts\TheForestDS_Installation\LaunchTheForestDSAfterInitialSetup.bat -Destination "C:\Users\$env:USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\LaunchTheForestDSAfterInitialSetup.bat"
 
 #Start the server, and we're done!
-$argList = "-serverip $ipAddress -nosteamclient -serversteamport 8766 -servergameport 27015 -serverqueryport 27016 -enableVAC -servername " + $serverConfigInfo.ServerName + " -serverplayers 8 -difficulty Normal -inittype Continue -slot 1 -serverpassword " + $serverConfigInfo.ServerPassword + " -serverpassword_admin " + $serverConfigInfo.ServerAdminPassword + " -serversteamaccount " + $serverConfigInfo.ServerToken
+$argList = "-serverip $serverConfigInfo.ServerIP -nosteamclient -serversteamport 8766 -servergameport 27015 -serverqueryport 27016 -enableVAC -servername " + $serverConfigInfo.ServerName + " -serverplayers 8 -difficulty Normal -inittype Continue -slot 1 -serverpassword " + $serverConfigInfo.ServerPassword + " -serverpassword_admin " + $serverConfigInfo.ServerAdminPassword + " -serversteamaccount " + $serverConfigInfo.ServerToken
 Start-Process C:\steamcmd\steamapps\common\TheForestDedicatedServer\TheForestDedicatedServer -ArgumentList $argList
 
 #You can use this command to stop the process if you so desire
