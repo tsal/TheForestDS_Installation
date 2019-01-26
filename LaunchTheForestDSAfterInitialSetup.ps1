@@ -6,7 +6,7 @@ if ((Test-Path C:\steamcmd\steamapps\common\TheForestDedicatedServer\serverConfi
     $serverPassword = ($customServerConfigs | where { $_.Name -eq "ServerPassword" }).Value
     $serverAdminPassword = ($customServerConfigs | where { $_.Name -eq "ServerAdminPassword" }).Value
     $serverToken = ($customServerConfigs | where { $_.Name -eq "ServerToken" }).Value
-    $argList = "-serverip $ipAddress -nographics -nosteamclient -serversteamport 8766 -servergameport 27015 -serverqueryport 27016 -enableVAC -servername $serverName -serverplayers 8 -difficulty Normal -inittype Continue -slot 1 -serverpassword $serverPassword -serverpassword_admin $serverAdminPassword -serversteamaccount $serverToken"
+    $argList = "-serverip $ipAddress -nographics -batchmode -nosteamclient -serversteamport 8766 -servergameport 27015 -serverqueryport 27016 -enableVAC -servername $serverName -serverplayers 8 -difficulty Normal -inittype Continue -slot 1 -serverpassword $serverPassword -serverpassword_admin $serverAdminPassword -serversteamaccount $serverToken"
     Start-Process C:\steamcmd\steamapps\common\TheForestDedicatedServer\TheForestDedicatedServer -ArgumentList $argList
 }
 
